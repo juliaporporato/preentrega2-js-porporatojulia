@@ -1,4 +1,3 @@
-
 class Menu {
     constructor(id, nombre, precio) {
         this.id = id;
@@ -8,18 +7,15 @@ class Menu {
 }
 
 const menus = [
-    new Menu(1, 'Menú Vegetariano', 2500),
-    new Menu(2, 'Menú de Pollo', 2890),
-    new Menu(3, 'Menú de Pescado', 3150),
-    new Menu(4, 'Menú de Carne', 3330)
+    new Menu(1, 'Menú Vegetariano', 10),
+    new Menu(2, 'Menú de Pollo', 12),
+    new Menu(3, 'Menú de Pescado', 15),
+    new Menu(4, 'Menú de Carne', 18)
 ];
 
+let cart = [];
 
-let carrito = [];
-
-// Función para mostrar menús y carrito
 function display() {
-    // Mostrar menús
     document.getElementById('menus-container').innerHTML = menus.map(menu => `
         <div class="menu">
             <span>${menu.nombre} - $${menu.precio}</span>
@@ -27,8 +23,7 @@ function display() {
         </div>
     `).join('');
 
-    // Mostrar carrito
-    document.getElementById('cart-container').innerHTML = carrito.map((menu, index) => `
+    document.getElementById('cart-container').innerHTML = cart.map((menu, index) => `
         <div class="cart-item">
             <span>${menu.nombre} - $${menu.precio}</span>
             <button onclick="removeFromCart(${index})">Eliminar</button>
@@ -36,30 +31,46 @@ function display() {
     `).join('');
 }
 
-// Añadir un menú al carrito
 function addToCart(menuId) {
     const menu = menus.find(m => m.id === menuId);
-    carrito.push(menu);
+    cart.push(menu);
     display();
 }
 
-// Eliminar un menú del carrito
 function removeFromCart(index) {
-    carrito.splice(index, 1);
-    display();
+    if (index >= 0 && index < cart.length) {
+        cart.splice(index, 1);
+        display();
+    } else {
+        alert('Índice inválido');
+    }
 }
 
-// Finalizar la compra
 function finalizePurchase() {
-    if (carrito.length === 0) {
+    if (cart.length === 0) {
         alert('El carrito está vacío.');
     } else {
-        const total = carrito.reduce((sum, menu) => sum + menu.precio, 0);
+        const total = cart.reduce((sum, menu) => sum + menu.precio, 0);
         alert(`Compra finalizada. Total: $${total}`);
-        carrito = [];
+        cart = [];
         display();
     }
 }
 
-// Inicializar la vista
 display();
+
+function simulateAddToCart() {
+    let added = false;
+    do {
+        const menuId = parseInt(prompt("Ingrese el ID del menú para añadir al carrito (1-4):"));
+        if (menus.some(menu => menu.id === menuId)) {
+            addToCart(menuId);
+            alert("Menú añadido al carrito.");
+            added = true;
+        } else {
+            alert("ID inválido. Inténtelo de nuevo.");
+        }
+    } while (!added);
+}
+
+simulateAddToCart();
